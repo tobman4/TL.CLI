@@ -8,9 +8,12 @@ public class OptionAttribute : ParamaterAttribute {
   public OptionAttribute(string name): base(name) {
   }
 
+  public OptionAttribute(string name, string desc): base(name, desc) {
+  }
+
   private Option GetObject(Type type) {
     var optionType = typeof(Option<>).MakeGenericType(type);
-    var obj = Activator.CreateInstance(optionType, new [] { Name, null });
+    var obj = Activator.CreateInstance(optionType, new [] { Name, Desc });
 
     if(obj is not Option)
       throw new Exception("Wrong type?????????");
