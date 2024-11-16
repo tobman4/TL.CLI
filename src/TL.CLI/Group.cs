@@ -8,8 +8,8 @@ namespace TL.CLI;
 class Group : Command {
   public readonly Object Object;
 
-  private readonly Dictionary<PropertyInfo, Option> _groupOptions = new();
-  private readonly Dictionary<PropertyInfo, Argument> _groupArguments = new();
+  private readonly Dictionary<PropertyInfo, Option> _options = new();
+  private readonly Dictionary<PropertyInfo, Argument> _arguments = new();
 
   public Group(string name, Object group): base(name) {
     Object = group;
@@ -49,14 +49,14 @@ class Group : Command {
 
       // TODO: How to get default value?
       AddGlobalOption(opt);
-      _groupOptions.Add(info,opt);
+      _options.Add(info,opt);
     }
 
     else if(argAttr is not null) {
       var arg = argAttr.Build(info);
 
       AddArgument(arg);
-      _groupArguments.Add(info,arg);
+      _arguments.Add(info,arg);
     }
 
     // else
@@ -65,12 +65,12 @@ class Group : Command {
 
   public void LoadValues(InvocationContext context) {
 
-    foreach(var kv in _groupOptions) {
+    foreach(var kv in _options) {
       var val = context.ParseResult.GetValueForOption(kv.Value);
       kv.Key.SetValue(Object,val);
     }
 
-    foreach(var kv in _groupArguments) {
+    foreach(var kv in _arguments) {
       var val = context.ParseResult.GetValueForArgument(kv.Value);
       kv.Key.SetValue(Object,val);
     }
