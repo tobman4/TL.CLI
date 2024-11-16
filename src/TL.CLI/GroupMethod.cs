@@ -55,11 +55,11 @@ class GroupMethod : Command {
   }
 
   public async Task InvokeAsync(InvocationContext context) {
-    
+    _group.LoadValues(context);
     var values = _method.GetParameters()
       .Select(e => GetValue(e,context))
       .ToArray();
-
+    
     var result = _method.Invoke(_group.Object, values);
 
     await Task.Delay(1); 

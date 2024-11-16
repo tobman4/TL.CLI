@@ -21,7 +21,14 @@ public class OptionAttribute : ParamaterAttribute {
     return (Option)obj;
   }
 
-  public Option Build(PropertyInfo info) => GetObject(info.PropertyType);
+  // public Option Build(PropertyInfo info) => GetObject(info.PropertyType);
+  public Option Build(PropertyInfo info) {
+    var obj = GetObject(info.PropertyType);
+    obj.IsRequired = true;
+
+    return obj;
+  }
+
   public Option Build(ParameterInfo parameter) {
     var opt = GetObject(parameter.ParameterType);
     if(parameter.HasDefaultValue) {
