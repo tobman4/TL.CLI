@@ -1,7 +1,7 @@
 namespace TL.CLI.Attributes;
 
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
 public class ParamaterAttribute : Attribute {
 
   public readonly string Name;
