@@ -34,7 +34,6 @@ public class Say {
 
 using TL.CLI;
 
-Console.WriteLine("Hello, World!");
 var app = new App();
 app.AddGroup<Say>();
 
