@@ -5,13 +5,13 @@ using TL.CLI.Attributes;
 
 namespace TL.CLI;
 
-public class GroupCommand : Command {
+class Group : Command {
   public readonly Object Object;
 
-  private readonly Dictionary<PropertyInfo, Option> _propOptions = new();
+  private readonly Dictionary<PropertyInfo, Option> _groupOptions = new();
   private readonly Dictionary<PropertyInfo, Argument> _groupArguments = new();
 
-  public GroupCommand(string name, Object group): base(name) {
+  public Group(string name, Object group): base(name) {
     Object = group;
     LoadCommands();
     LoadParamaters();
@@ -49,7 +49,7 @@ public class GroupCommand : Command {
 
       // TODO: How to get default value?
       AddGlobalOption(opt);
-      _propOptions.Add(info,opt);
+      _groupOptions.Add(info,opt);
     }
 
     else if(argAttr is not null) {
@@ -65,7 +65,7 @@ public class GroupCommand : Command {
 
   public void LoadValues(InvocationContext context) {
 
-    foreach(var kv in _propOptions) {
+    foreach(var kv in _groupOptions) {
       var val = context.ParseResult.GetValueForOption(kv.Value);
       kv.Key.SetValue(Object,val);
     }

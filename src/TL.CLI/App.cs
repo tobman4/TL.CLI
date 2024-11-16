@@ -26,9 +26,13 @@ public class App {
     if(groupObject is null)
       throw new Exception($"Faild to create command group: {name}");
 
-    var group = new GroupCommand(name, groupObject);
+    var group = new Group(name, groupObject);
     _root.Add(group);
   }
+
+  // public void AddGroup<T>(T group) {
+  //   _root.Add(group);
+  // }
 
   public async Task InvokeAsync(string[] args) =>
     await _root.InvokeAsync(args);

@@ -6,12 +6,12 @@ using TL.CLI.Attributes;
 namespace TL.CLI;
 
 class GroupMethod : Command {
-  private readonly GroupCommand _group;
+  private readonly Group _group;
   private readonly MethodInfo _method;
   private readonly Dictionary<ParameterInfo, Option> _options = new();
   private readonly Dictionary<ParameterInfo, Argument> _arguments = new();
 
-  public GroupMethod(string name, GroupCommand group, MethodInfo method): base(name) {
+  public GroupMethod(string name, Group group, MethodInfo method): base(name) {
     _group = group;
     _method = method;
     
