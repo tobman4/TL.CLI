@@ -23,15 +23,25 @@ class GroupMethod : Command {
 
   private void AddParamater(ParameterInfo parameter) {
     var optionAttribute = parameter.GetCustomAttribute<OptionAttribute>();
+    var argumentAttribute = parameter.GetCustomAttribute<ArgumentAttribute>();
+
+
     if(optionAttribute is not null) {
       var option = optionAttribute.Build(parameter);
       
       AddOption(option);
       _options.Add(parameter, option);
     }
-    
 
-    // TODO: Add argument
+    else if(argumentAttribute is not null) {
+      var argument = argumentAttribute.Build(parameter);
+      
+      AddArgument(argument);
+      _arguments.Add(parameter, argument);
+    }
+    
+    else
+      throw new NotImplementedException("Parameter need to be argument or option");
   }
 
   public object? GetValue(ParameterInfo parameter, InvocationContext context) {
