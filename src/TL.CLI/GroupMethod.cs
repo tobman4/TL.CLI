@@ -61,6 +61,9 @@ class GroupMethod : Command {
       .ToArray();
     
     var result = _method.Invoke(_group.Object, values);
+    
+    if(result is Task t)
+      await t;
 
     await Task.Delay(1); 
   }
