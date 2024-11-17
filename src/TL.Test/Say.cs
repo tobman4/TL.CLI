@@ -2,7 +2,7 @@ using TL.CLI.Attributes;
 
 public class Say {
 
-  [Argument("count")]
+  [Option("-c")]
   public int Count { get; set; } = 1;
 
   [Command("hello")]
@@ -12,9 +12,11 @@ public class Say {
   }
   
   [Command("bye")]
-  public void Bye() {
-    for(int i = 0; i < Count; i++)
+  public async Task Bye() {
+    for(int i = 0; i < Count; i++) {
       Console.WriteLine("Bye :,(");
+      await Task.Delay(250);
+    }
   }
 
 }
