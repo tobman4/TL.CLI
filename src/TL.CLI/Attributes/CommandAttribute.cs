@@ -1,6 +1,6 @@
 namespace TL.CLI.Attributes;
 
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
 public class CommandAttribute : Attribute {
 
   public readonly string Name;

@@ -1,4 +1,6 @@
 using System.CommandLine;
+using System.Reflection;
+using TL.CLI.Attributes;
 
 namespace TL.CLI;
 
@@ -22,6 +24,9 @@ public class App {
 
   public void AddGroup<T>() {
     string name = typeof(T).Name;
+    if(typeof(T).GetCustomAttribute<CommandAttribute>() is CommandAttribute attr)
+      name = attr.Name;
+
     var groupObject = Activator.CreateInstance<T>();
     if(groupObject is null)
       throw new Exception($"Faild to create command group: {name}");
