@@ -67,9 +67,6 @@ class GroupMethod : Command {
         await t;
     } catch(TargetInvocationException err) {
       _group.TryHandleException(err.InnerException!);
-    } catch(Exception err) {
-      _group.TryHandleException(err);
     }
-
   }
 }
