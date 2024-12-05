@@ -61,10 +61,10 @@ class GroupMethod : Command {
       .ToArray();
     
     try {
-    var result = _method.Invoke(_group.Object, values);
+      var result = _method.Invoke(_group.Object, values);
     
-    if(result is Task t)
-      await t;
+      if(result is Task t)
+        await t;
     } catch(TargetInvocationException err) {
       _group.TryHandleException(err.InnerException!);
     } catch(Exception err) {
