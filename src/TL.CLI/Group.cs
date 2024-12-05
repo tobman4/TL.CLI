@@ -10,11 +10,13 @@ class Group : Command {
 
   private readonly Dictionary<PropertyInfo, Option> _options = new();
   private readonly Dictionary<PropertyInfo, Argument> _arguments = new();
+  private readonly Dictionary<Type, MethodInfo> _exceptionHandlers = new();
 
   public Group(string name, Object group): base(name) {
     Object = group;
     LoadCommands();
     LoadParamaters();
+    LoadHandlers();
   }
 
 
@@ -38,6 +40,16 @@ class Group : Command {
     }
   }
 
+  private void LoadHandlers() {
+    var groupType = Object.GetType();
+    foreach(var method in groupType.GetMethods()) {
+      var attr = method!.GetCustomAttribute<ExceptionHandlerAttribute>();
+      if(attr is null)
+        continue;
+
+      _exceptionHandlers.Add(attr.ExceptionType,method);
+    }
+  }
 
   private void TryAddParamater(PropertyInfo info) {
     var optAttr = info.GetCustomAttribute<OptionAttribute>();
@@ -45,7 +57,7 @@ class Group : Command {
  
 
     if(optAttr is not null) {
-      var opt = optAttr.Build(info);
+      var opt = optAttr.Build(info, Object);
 
       // TODO: How to get default value?
       AddGlobalOption(opt);
@@ -74,5 +86,14 @@ class Group : Command {
       var val = context.ParseResult.GetValueForArgument(kv.Value);
       kv.Key.SetValue(Object,val);
     }
+  }
+
+
+  public void TryHandleException(Exception err) {
+    if(!_exceptionHandlers.ContainsKey(err.GetType()))
+      return;
+
+    var method = _exceptionHandlers[err.GetType()]!;
+    method.Invoke(Object,new Object[] { err });
   }
 }
