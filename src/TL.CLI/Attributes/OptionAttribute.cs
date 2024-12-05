@@ -35,7 +35,6 @@ public class OptionAttribute : ParamaterAttribute {
 
     var option = GetObject(info.PropertyType);
     
-    Console.WriteLine($"{info.Name} -> Can read: {info.CanRead}. Can set {info.CanWrite}");
     if(info.CanRead)
       option.SetDefaultValue(info.GetValue(obj));
     else
