@@ -60,12 +60,13 @@ class GroupMethod : Command {
       .Select(e => GetValue(e,context))
       .ToArray();
     
-    var result = _method.Invoke(_group.Object, values);
+    try {
+      var result = _method.Invoke(_group.Object, values);
     
-    if(result is Task t)
-      await t;
-
-    await Task.Delay(1); 
+      if(result is Task t)
+        await t;
+    } catch(TargetInvocationException err) {
+      _group.TryHandleException(err.InnerException!);
+    }
   }
-
 }

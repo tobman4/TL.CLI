@@ -29,6 +29,21 @@ public class OptionAttribute : ParamaterAttribute {
     return obj;
   }
 
+  public Option Build(PropertyInfo info, Object obj) {
+    if(!info.CanWrite)
+      throw new Exception("Option need to have public set method");
+
+    var option = GetObject(info.PropertyType);
+    
+    if(info.CanRead)
+      option.SetDefaultValue(info.GetValue(obj));
+    else
+      option.IsRequired = true;
+
+
+    return option;
+  }
+
   public Option Build(ParameterInfo parameter) {
     var opt = GetObject(parameter.ParameterType);
     if(parameter.HasDefaultValue) {
