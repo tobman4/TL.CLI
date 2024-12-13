@@ -6,14 +6,15 @@ using TL.CLI.Attributes;
 namespace TL.CLI;
 
 class Group : Command {
-  public readonly Object Object;
+  private readonly Object _host;
+  private Type _hostType => _host.GetType();
 
   private readonly Dictionary<PropertyInfo, Option> _options = new();
   private readonly Dictionary<PropertyInfo, Argument> _arguments = new();
   private readonly Dictionary<Type, MethodInfo> _exceptionHandlers = new();
 
   public Group(string name, Object group): base(name) {
-    Object = group;
+    _host = group;
     LoadCommands();
     LoadParamaters();
     LoadHandlers();
@@ -21,14 +22,13 @@ class Group : Command {
 
 
   private void LoadCommands() {
-    var groupType = Object.GetType();
-    foreach(var method in groupType.GetMethods()) {
+    foreach(var method in _hostType.GetMethods()) {
       var attr = method.GetCustomAttribute<CommandAttribute>();
       if(attr is null)
         continue;
 
       // var command = new GroupMethod(attr.Name,this,method);
-      var command = new MethodCommand(method, Object);
+      var command = new MethodCommand(method, _host);
       command.AddPreAction(LoadValues);
       AddCommand(command);
     }
@@ -36,15 +36,13 @@ class Group : Command {
 
     
   private void LoadParamaters() {
-    var groupType = Object.GetType();
-    foreach(var propertie in groupType.GetProperties()) {
+    foreach(var propertie in _hostType.GetProperties()) {
       TryAddParamater(propertie);
     }
   }
 
   private void LoadHandlers() {
-    var groupType = Object.GetType();
-    foreach(var method in groupType.GetMethods()) {
+    foreach(var method in _hostType.GetMethods()) {
       var attr = method!.GetCustomAttribute<ExceptionHandlerAttribute>();
       if(attr is null)
         continue;
@@ -59,7 +57,7 @@ class Group : Command {
  
 
     if(optAttr is not null) {
-      var opt = optAttr.Build(info, Object);
+      var opt = optAttr.Build(info, _host);
 
       // TODO: How to get default value?
       AddGlobalOption(opt);
@@ -81,12 +79,12 @@ class Group : Command {
 
     foreach(var kv in _options) {
       var val = context.ParseResult.GetValueForOption(kv.Value);
-      kv.Key.SetValue(Object,val);
+      kv.Key.SetValue(_host,val);
     }
 
     foreach(var kv in _arguments) {
       var val = context.ParseResult.GetValueForArgument(kv.Value);
-      kv.Key.SetValue(Object,val);
+      kv.Key.SetValue(_host,val);
     }
   }
 
@@ -96,6 +94,6 @@ class Group : Command {
       return;
 
     var method = _exceptionHandlers[err.GetType()]!;
-    method.Invoke(Object,new Object[] { err });
+    method.Invoke(_host,new Object[] { err });
   }
 }
