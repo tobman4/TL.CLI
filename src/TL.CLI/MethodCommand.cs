@@ -6,12 +6,14 @@ using TL.CLI.Attributes;
 namespace TL.CLI;
 
 public delegate void PreAction(InvocationContext context);
+public delegate void ErrorAction(Exception err);
 
 class MethodCommand : Command {
   
   private readonly MethodInfo _method;
   private readonly Object? _host;
 
+  private ErrorAction? _onError;
   private readonly List<PreAction> _preActions = new();
   private readonly Dictionary<ParameterInfo, Option> _options = new();
   private readonly Dictionary<ParameterInfo, Argument> _arguments = new();
@@ -33,6 +35,9 @@ class MethodCommand : Command {
 
   public void AddPreAction(PreAction action) =>
     _preActions.Add(action);
+
+  public void OnError(ErrorAction action) =>
+    _onError = action;
 
   private void LoadParameters() {
     foreach(var parameter in _method.GetParameters()) {
@@ -88,10 +93,16 @@ class MethodCommand : Command {
     if(result is Task t)
       await t;
     } catch(TargetInvocationException err) {
-      if(err.InnerException is not null)
-        throw err.InnerException;
-      else 
-        throw err;
+      context.ExitCode = 1;
+
+      var inner = err.InnerException;
+      if(inner is null)
+        inner = err;
+
+      if(_onError is not null)
+        _onError(inner);
+      else
+        throw inner;
     }
 
 

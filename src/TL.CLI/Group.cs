@@ -30,6 +30,7 @@ class Group : Command {
       // var command = new GroupMethod(attr.Name,this,method);
       var command = new MethodCommand(method, _host);
       command.AddPreAction(LoadValues);
+      command.OnError(TryHandleException);
       AddCommand(command);
     }
   }
