@@ -27,7 +27,9 @@ class Group : Command {
       if(attr is null)
         continue;
 
-      var command = new GroupMethod(attr.Name,this,method);
+      // var command = new GroupMethod(attr.Name,this,method);
+      var command = new MethodCommand(method, Object);
+      command.AddPreAction(LoadValues);
       AddCommand(command);
     }
   }
