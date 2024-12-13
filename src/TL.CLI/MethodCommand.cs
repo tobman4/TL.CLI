@@ -80,10 +80,21 @@ class MethodCommand : Command {
       action(context);
 
     var parameters = GetParameters(context);
+
+
+    try {
     var result = _method.Invoke(_host, parameters);
 
     if(result is Task t)
       await t;
+    } catch(TargetInvocationException err) {
+      if(err.InnerException is not null)
+        throw err.InnerException;
+      else 
+        throw err;
+    }
+
+
   }
 
 }
