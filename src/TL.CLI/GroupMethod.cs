@@ -62,7 +62,7 @@ class GroupMethod : Command {
     
     try {
       var result = _method.Invoke(_group.Object, values);
-    
+
       if(result is Task t)
         await t;
     } catch(TargetInvocationException err) {

@@ -1,5 +1,6 @@
 using TL.CLI.Attributes;
 
+[Command("ss")]
 public class Say {
 
   [Option("-c")]
