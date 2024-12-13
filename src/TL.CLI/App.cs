@@ -21,6 +21,18 @@ public class App {
     _root = root;
   }
 
+  public void Bind<T>(T host) where T : class {
+    var type = typeof(T);
+    foreach(var method in type.GetMethods()) {
+
+      //Only bind method with command attribute
+      if(method.GetCustomAttribute<CommandAttribute>() is null)
+        continue;
+
+      var command = new MethodCommand(method, host);
+      _root.AddCommand(command);
+    }
+  }
 
   public void AddGroup<T>() {
     string name = typeof(T).Name;
